@@ -16,7 +16,7 @@ on Piazza as well.
 To test your submission, we will execute the following command from inside the
 `src/github.com/cmu440/p0` directory:
 
-```
+```sh
 $ go test -race
 ```
 
@@ -25,7 +25,7 @@ This command will run all unit tests inside the `server_test.go` file with the r
 To execute a single unit test, you can use the `-test.run` flag and specify a regular expression
 identifying the name of the test to run. For example,
 
-```
+```sh
 $ go test -race -test.run TestBasic1
 ```
 
@@ -40,7 +40,7 @@ running your server in the background.
 To compile and build the `srunner` program into a binary that you can run, execute the three
 commands below:
 
-```
+```bash
 $ export GOPATH=$HOME/p0
 $ go install github.com/cmu440/srunner
 $ $GOPATH/bin/srunner
@@ -65,6 +65,6 @@ beware of the following:
 2. Go is installed to a custom location on AFS machines, so you'll also need to set the `GOROOT`
    environment variable if you are working on a cluster machine or have ssh-ed into one remotely:
 
-    ```
+    ```bash
     $ export GOROOT=/usr/local/lib/go
     ```
