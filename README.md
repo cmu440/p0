@@ -17,10 +17,15 @@ To test your submission, we will execute the following command from inside the
 `src/github.com/cmu440/p0` directory:
 
 ```sh
-$ go test -race
+$ go test
 ```
 
-This command will run all unit tests inside the `server_test.go` file with the race detector enabled.
+We will also check your code for race conditions using Go's race detector by executing
+the following command:
+
+```sh
+$ go test -race
+```
 
 To execute a single unit test, you can use the `-test.run` flag and specify a regular expression
 identifying the name of the test to run. For example,

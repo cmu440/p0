@@ -72,19 +72,19 @@ func (ts *testSystem) startServer(numTries int) error {
 	for i := 0; i < numTries; i++ {
 		ts.server = New()
 		if ts.server == nil {
-			return errors.New("Server returned by New() must not be nil.")
+			return errors.New("server returned by New() must not be nil")
 		}
 		port := 2000 + randGen.Intn(10000)
 		if err := ts.server.Start(port); err == nil {
 			ts.hostport = net.JoinHostPort("localhost", strconv.Itoa(port))
 			return nil
-		} else {
-			fmt.Printf("Warning! Failed to start server on port %d: %s.\n", port, err)
-			time.Sleep(time.Duration(50) * time.Millisecond)
 		}
+		fmt.Printf("Warning! Failed to start server on port %d: %s.\n", port, err)
+		time.Sleep(time.Duration(50) * time.Millisecond)
+
 	}
 	if err != nil {
-		return fmt.Errorf("Failed to start server after %d tries.", numTries)
+		return fmt.Errorf("failed to start server after %d tries", numTries)
 	}
 	return nil
 }
@@ -150,13 +150,13 @@ func (ts *testSystem) startWriting(writeChan chan<- *networkEvent, numMsgs int, 
 		cli := cli
 		go func() {
 			// Client and message IDs guarantee that msgs sent over the network are unique.
-			for msgId := 0; msgId < numMsgs; msgId++ {
+			for msgID := 0; msgID < numMsgs; msgID++ {
 				// Notify the test runner that a message should be written to the network.
 				writeChan <- &networkEvent{
 					cli:      cli,
-					writeMsg: fmt.Sprintf("%d %t %d\n", cli.id, cli.slow, msgId),
+					writeMsg: fmt.Sprintf("%d %t %d\n", cli.id, cli.slow, msgID),
 				}
-				if msgId%100 == 0 {
+				if msgID%100 == 0 {
 					// Give readers some time to consume message before writing
 					// the next batch of messages.
 					time.Sleep(time.Duration(100) * time.Millisecond)
@@ -214,7 +214,7 @@ func (ts *testSystem) runTest(numMsgs, timeout int, normalClients, slowClients [
 			}
 			if v, ok := msgMap[msg]; !ok {
 				// Abort! Client received a message that was never sent.
-				return fmt.Errorf("Client read unexpected message: %s.", msg)
+				return fmt.Errorf("client read unexpected message: %s", msg)
 			} else if v > 1 {
 				// We expect the message to be read v - 1 more times.
 				msgMap[msg] = v - 1
@@ -253,27 +253,26 @@ func (ts *testSystem) runTest(numMsgs, timeout int, normalClients, slowClients [
 			if hasSlowClients {
 				if normalReads != totalWrites*numNormalClients {
 					// Make sure non-slow clients received all written messages.
-					return fmt.Errorf("Non-slow clients received %d messages, expected %d.",
+					return fmt.Errorf("non-slow clients received %d messages, expected %d",
 						normalReads, totalWrites*numNormalClients)
 				}
 				if slowReads < 100 {
 					// Make sure the server buffered 100 messages for
 					// slow-reading clients.
-					return errors.New("Slow-reading client read less than 100 messages.")
+					return errors.New("slow-reading client read less than 100 messages")
 				}
 				return nil
-			} else {
-				// If there are no slow clients, then no messages should be dropped and
-				// the test should NOT timeout.
-				return errors.New("Test timed out.")
 			}
+			// Otherwise, if there are no slow clients, then no messages
+			// should be dropped and the test should NOT timeout.
+			return errors.New("test timed out")
 		}
 	}
 
 	if hasSlowClients {
 		// If there are slow clients, then at least some messages
 		// should have been dropped.
-		return errors.New("No messages were dropped by slow clients.")
+		return errors.New("no messages were dropped by slow clients")
 	}
 
 	return nil
@@ -281,13 +280,13 @@ func (ts *testSystem) runTest(numMsgs, timeout int, normalClients, slowClients [
 
 func (ts *testSystem) checkCount(expected int) error {
 	if count := ts.server.Count(); count != expected {
-		return fmt.Errorf("Count() returned an incorrect value (returned %d, expected %d).",
+		return fmt.Errorf("Count returned an incorrect value (returned %d, expected %d)",
 			count, expected)
 	}
 	return nil
 }
 
-func testBasic(t *testing.T, name string, numClients, numMessages int) {
+func testBasic(t *testing.T, name string, numClients, numMessages, timeout int) {
 	syscall.Getrlimit(syscall.RLIMIT_NOFILE, &syscall.Rlimit{Cur: 64000, Max: 64000})
 	fmt.Printf("========== %s: %d client(s), %d messages each ==========\n", name, numClients, numMessages)
 
@@ -318,8 +317,7 @@ func testBasic(t *testing.T, name string, numClients, numMessages int) {
 		return
 	}
 
-	const basicTestTimeout = 5000
-	if err := ts.runTest(numMessages, basicTestTimeout, allClients, []*testClient{}, 0); err != nil {
+	if err := ts.runTest(numMessages, timeout, allClients, []*testClient{}, 0); err != nil {
 		t.Error(err)
 		return
 	}
@@ -429,27 +427,27 @@ func testCount(t *testing.T, name string, timeout int, max int, events ...*count
 }
 
 func TestBasic1(t *testing.T) {
-	testBasic(t, "TestBasic1", 1, 100)
+	testBasic(t, "TestBasic1", 1, 100, 5000)
 }
 
 func TestBasic2(t *testing.T) {
-	testBasic(t, "TestBasic2", 1, 2000)
+	testBasic(t, "TestBasic2", 1, 1500, 10000)
 }
 
 func TestBasic3(t *testing.T) {
-	testBasic(t, "TestBasic3", 2, 20)
+	testBasic(t, "TestBasic3", 2, 20, 5000)
 }
 
 func TestBasic4(t *testing.T) {
-	testBasic(t, "TestBasic4", 2, 2000)
+	testBasic(t, "TestBasic4", 2, 1500, 10000)
 }
 
 func TestBasic5(t *testing.T) {
-	testBasic(t, "TestBasic5", 5, 750)
+	testBasic(t, "TestBasic5", 5, 750, 10000)
 }
 
 func TestBasic6(t *testing.T) {
-	testBasic(t, "TestBasic6", 10, 2000)
+	testBasic(t, "TestBasic6", 10, 1500, 10000)
 }
 
 func TestCount1(t *testing.T) {
@@ -471,7 +469,7 @@ func TestCount2(t *testing.T) {
 }
 
 func TestSlowClient1(t *testing.T) {
-	testSlowClient(t, "TestSlowClient1", 1000, 1, 1, 3000, 6000)
+	testSlowClient(t, "TestSlowClient1", 1000, 1, 1, 4000, 8000)
 }
 
 func TestSlowClient2(t *testing.T) {
