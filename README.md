@@ -63,7 +63,7 @@ beware of the following:
    writing your Go code locally instead.
 
 2. Go is installed to a custom location on AFS machines, so you'll also need to set the `GOROOT`
-   environmental variable if you are working on a cluster machine or have ssh-ed into one remotely:
+   environment variable if you are working on a cluster machine or have ssh-ed into one remotely:
 
     ```
     $ export GOROOT=/usr/local/lib/go
