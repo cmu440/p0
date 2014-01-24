@@ -59,17 +59,10 @@ affect your grade for this project.
 
 ## Using Go on AFS
 
-For those students who wish to write their Go code on AFS (either in a cluster or remotely), you should
-beware of the following:
+For those students who wish to write their Go code on AFS (either in a cluster or remotely), you will
+need to set the `GOROOT` environment variable as follows (this is required because Go is installed
+in a custom location on AFS machines):
 
-1. As of January 23, 2014, the current version of Go installed on AFS is `v1.0.2`, which is outdated.
-   We have submitted a request to install a more recent version of Go on AFS, and we'll let you know
-   once that request goes through. Until then, we recommend installing Go on your own computer and
-   writing your Go code locally instead.
-
-2. Go is installed to a custom location on AFS machines, so you'll also need to set the `GOROOT`
-   environment variable if you are working on a cluster machine or have ssh-ed into one remotely:
-
-    ```bash
-    $ export GOROOT=/usr/local/lib/go
-    ```
+```bash
+$ export GOROOT=/usr/local/lib/go
+```
