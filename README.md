@@ -57,6 +57,10 @@ messages to your server. We have provided you with an unimplemented `crunner` pr
 use for this purpose if you wish. Whether or not you decide to implement a `crunner` program will not
 affect your grade for this project.
 
+You could also test your server using Netcat as you saw shortly in lecture (i.e. run the `srunner`
+binary in the background, execute `nc localhost 9999`, type the message you wish to send, and then
+click enter).
+
 ## Using Go on AFS
 
 For those students who wish to write their Go code on AFS (either in a cluster or remotely), you will
