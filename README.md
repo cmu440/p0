@@ -43,7 +43,7 @@ simply creates an instance of your server, starts it on a default port, and bloc
 running your server in the background.
 
 To compile and build the `srunner` program into a binary that you can run, execute the three
-commands below:
+commands below (these directions assume you have cloned this repo to `$HOME/p0`):
 
 ```bash
 $ export GOPATH=$HOME/p0
