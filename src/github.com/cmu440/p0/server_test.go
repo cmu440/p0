@@ -10,7 +10,6 @@ import (
 	"math/rand"
 	"net"
 	"strconv"
-	"syscall"
 	"testing"
 	"time"
 )
@@ -287,7 +286,6 @@ func (ts *testSystem) checkCount(expected int) error {
 }
 
 func testBasic(t *testing.T, name string, numClients, numMessages, timeout int) {
-	syscall.Getrlimit(syscall.RLIMIT_NOFILE, &syscall.Rlimit{Cur: 64000, Max: 64000})
 	fmt.Printf("========== %s: %d client(s), %d messages each ==========\n", name, numClients, numMessages)
 
 	ts := newTestSystem(t)
@@ -324,7 +322,6 @@ func testBasic(t *testing.T, name string, numClients, numMessages, timeout int) 
 }
 
 func testSlowClient(t *testing.T, name string, numMessages, numSlowClients, numNormalClients, slowDelay, timeout int) {
-	syscall.Getrlimit(syscall.RLIMIT_NOFILE, &syscall.Rlimit{Cur: 64000, Max: 64000})
 	fmt.Printf("========== %s: %d total clients, %d slow client(s), %d messages each ==========\n",
 		name, numSlowClients+numNormalClients, numSlowClients, numMessages)
 
@@ -409,7 +406,6 @@ func (ts *testSystem) runCountTest(events []*countEvent, timeout int) {
 }
 
 func testCount(t *testing.T, name string, timeout int, max int, events ...*countEvent) {
-	syscall.Getrlimit(syscall.RLIMIT_NOFILE, &syscall.Rlimit{Cur: 64000, Max: 64000})
 	fmt.Printf("========== %s: %d rounds, up to %d clients started/killed per round ==========\n",
 		name, len(events), max)
 
